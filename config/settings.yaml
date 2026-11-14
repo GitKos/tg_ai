@@ -1,0 +1,47 @@
+brand:
+  name: "Fursat AI"
+  username: "fursat_ai"          # желаемый @username канала (на 14.11.2026 был свободен)
+  tagline: "ИИ, деньги и возможности — для Узбекистана"
+  description: |
+    Fursat AI — где заработать и что изменит вашу работу завтра.
+    Нейросети, бизнес-идеи, технологии и возможности для Узбекистана.
+    Только проверенные новости со ссылкой на источник.
+  language: "ru"                  # ru | uz (латиница) — язык, на котором пишет редактор
+
+# Узбекистан: UTC+5, без перехода на летнее время
+timezone_offset_hours: 5
+
+# Слоты публикаций по ташкентскому времени (утро / обед / вечерний пик)
+slots: ["08:00", "10:30", "13:00", "16:00", "18:30", "20:30", "22:00"]
+slot_window_minutes: 100          # слот можно закрыть в течение этого времени (cron GitHub опаздывает)
+max_posts_per_day: 8
+
+urgent:
+  min_score: 92                   # новость выше этого балла может выйти вне расписания
+  max_per_day: 1
+  quiet_hours: [23, 7]            # ночью срочные не публикуем
+
+collect:
+  min_interval_minutes: 25
+  freshness_hours: 36             # старше — не рассматриваем
+  request_timeout: 20
+
+editor:
+  model: "claude-opus-5-5"        # можно переопределить переменной LLM_MODEL
+  effort: "medium"
+  candidates_per_run: 3           # сколько новостей отдаём редактору за один запуск
+  daily_limit: 18                 # потолок вызовов LLM в сутки (контроль расходов)
+  min_prescore: 45                # ниже — редактору не показываем
+  queue_target: 4                 # сколько готовых авто-постов держим в очереди
+  post_ttl_hours: 40              # неопубликованная новость устаревает
+  max_caption_chars: 1000         # лимит Telegram на подпись к фото — 1024
+
+rubrics:
+  ai:        {emoji: "🤖", label: "ИИ",          color: ["#5B2EFF", "#00C2FF"]}
+  money:     {emoji: "💰", label: "Заработок",   color: ["#00A86B", "#B6F500"]}
+  business:  {emoji: "📈", label: "Бизнес",      color: ["#FF6A00", "#FFC400"]}
+  tech:      {emoji: "⚡", label: "Технологии",  color: ["#0057FF", "#7CF7FF"]}
+  trends:    {emoji: "🔥", label: "Тренды",      color: ["#FF2E63", "#FF9A3C"]}
+  uzbekistan: {emoji: "🇺🇿", label: "Узбекистан", color: ["#0099B5", "#1EB53A"]}
+  guide:     {emoji: "🧭", label: "Инструкция",  color: ["#7A3CFF", "#FF5ACD"]}
+  digest:    {emoji: "🗞", label: "Дайджест",    color: ["#2B2D42", "#8D99AE"]}

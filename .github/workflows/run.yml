@@ -1,0 +1,75 @@
+name: Fursat AI — редакция
+
+# Конвейер запускается каждые 20 минут. Состояние (база SQLite и панель) хранится в отдельной
+# ветке `state` одним коммитом, который перезаписывается: история main остаётся чистой.
+on:
+  schedule:
+    - cron: "*/20 * * * *"
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "Команда: tick | setup | doctor | status | report | seed"
+        default: "tick"
+
+concurrency:
+  group: fursat-run          # запуски не накладываются друг на друга — база не повреждается
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHANNEL: ${{ secrets.TELEGRAM_CHANNEL }}
+      TELEGRAM_ADMIN_CHAT: ${{ secrets.TELEGRAM_ADMIN_CHAT }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      LLM_MODEL: ${{ vars.LLM_MODEL }}
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -q -r requirements.txt
+
+      - name: Восстановить состояние
+        run: |
+          mkdir -p data
+          if git fetch -q origin state 2>/dev/null; then
+            git show FETCH_HEAD:data/fursat.db > data/fursat.db
+            echo "состояние восстановлено"
+          else
+            echo "ветки state ещё нет — первый запуск"
+          fi
+
+      - name: Запуск
+        run: python -m fursat ${{ github.event.inputs.command || 'tick' }}
+
+      - name: Сохранить состояние
+        if: always()
+        run: |
+          test -f data/fursat.db || exit 0
+          git config user.name "fursat-bot"
+          git config user.email "fursat-bot@users.noreply.github.com"
+          git checkout -q --orphan state-tmp
+          git rm -rq --cached .
+          git add -f data/fursat.db
+          git add -f data/status.html 2>/dev/null || true
+          git commit -qm "state $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -qf origin state-tmp:state
+
+      - name: Суточная резервная копия
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fursat-db-${{ github.run_id }}
+          path: data/backups/*.db
+          retention-days: 30
+          if-no-files-found: ignore

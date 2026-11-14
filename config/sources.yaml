@@ -1,0 +1,39 @@
+# База источников. trust: 3 — первоисточник/официальный блог или агентство уровня Reuters/Bloomberg,
+# 2 — авторитетное профильное издание, 1 — агрегатор/сообщество (только как сигнал тренда,
+# факты из таких источников без подтверждения не публикуются).
+# region: world | uz.  Проверка работоспособности: python -m fursat sources
+
+sources:
+  # ── Официальные блоги ИИ-компаний (первоисточники) ───────────────────────────
+  - {name: "OpenAI News",        url: "https://openai.com/news/rss.xml",                     trust: 3, region: world, topic: ai}
+  - {name: "Google AI Blog",     url: "https://blog.google/technology/ai/rss/",              trust: 3, region: world, topic: ai}
+  - {name: "Google DeepMind",    url: "https://deepmind.google/blog/rss.xml",                trust: 3, region: world, topic: ai}
+  - {name: "NVIDIA Blog",        url: "https://blogs.nvidia.com/feed/",                      trust: 3, region: world, topic: tech}
+  - {name: "Hugging Face Blog",  url: "https://huggingface.co/blog/feed.xml",                trust: 3, region: world, topic: ai}
+
+  # ── Мировые технологические издания ─────────────────────────────────────────
+  - {name: "TechCrunch",         url: "https://techcrunch.com/feed/",                        trust: 2, region: world, topic: tech}
+  - {name: "TechCrunch AI",      url: "https://techcrunch.com/category/artificial-intelligence/feed/", trust: 2, region: world, topic: ai}
+  - {name: "The Verge",          url: "https://www.theverge.com/rss/index.xml",              trust: 2, region: world, topic: tech}
+  - {name: "Wired",              url: "https://www.wired.com/feed/rss",                      trust: 2, region: world, topic: tech}
+  - {name: "MIT Technology Review", url: "https://www.technologyreview.com/feed/",           trust: 2, region: world, topic: ai}
+  - {name: "Ars Technica",       url: "https://feeds.arstechnica.com/arstechnica/index",     trust: 2, region: world, topic: tech}
+  - {name: "CNBC Technology",    url: "https://www.cnbc.com/id/19854910/device/rss/rss.html", trust: 3, region: world, topic: business}
+  - {name: "Bloomberg Technology", url: "https://feeds.bloomberg.com/technology/news.rss",   trust: 3, region: world, topic: business}
+  - {name: "The Decoder",        url: "https://the-decoder.com/feed/",                       trust: 2, region: world, topic: ai}
+  - {name: "Engadget",           url: "https://www.engadget.com/rss.xml",                    trust: 2, region: world, topic: tech}
+  - {name: "Rest of World",      url: "https://restofworld.org/feed/latest/",                trust: 2, region: world, topic: business}
+
+  # ── Сигналы трендов (не источник фактов) ────────────────────────────────────
+  - {name: "Hacker News 300+",   url: "https://hnrss.org/frontpage?points=300",              trust: 1, region: world, topic: trends}
+  - {name: "Product Hunt",       url: "https://www.producthunt.com/feed",                    trust: 1, region: world, topic: trends}
+
+  # ── Узбекистан ──────────────────────────────────────────────────────────────
+  - {name: "Spot.uz",            url: "https://www.spot.uz/ru/rss/",                         trust: 3, region: uz, topic: business}
+  - {name: "Gazeta.uz",          url: "https://www.gazeta.uz/ru/rss/",                       trust: 3, region: uz, topic: uzbekistan}
+  - {name: "Kun.uz",             url: "https://kun.uz/ru/news/rss",                          trust: 2, region: uz, topic: uzbekistan}
+  - {name: "Daryo",              url: "https://daryo.uz/ru/feed/",                           trust: 2, region: uz, topic: uzbekistan}
+  - {name: "UzDaily",            url: "https://www.uzdaily.uz/ru/rss",                       trust: 2, region: uz, topic: business}
+  - {name: "Kursiv Uzbekistan",  url: "https://uz.kursiv.media/feed/",                       trust: 2, region: uz, topic: business}
+  - {name: "Podrobno.uz",        url: "https://podrobno.uz/rss/",                            trust: 2, region: uz, topic: uzbekistan}
+  - {name: "Review.uz",          url: "https://review.uz/rss",                               trust: 2, region: uz, topic: business}
